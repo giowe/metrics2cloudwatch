@@ -1,0 +1,12 @@
+{
+  "private": true,
+  "name": "",
+  "description": "",
+  "author": "Giovanni Bruno <giovanni.bruno@soluzionifutura.it>",
+  "contributors": [{
+    "name": "Giovanni Bruno",
+    "email": "giovanni.bruno@soluzionifutura.it"
+  }],
+  "dependencies": {
+  }
+}

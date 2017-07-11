@@ -1,0 +1,35 @@
+{
+  "private": true,
+  "name": "metrics2cloudwatch",
+  "version": "0.0.0",
+  "description": "",
+  "scripts": {
+    "postinstall": "gulp install",
+    "test": "gulp invoke-local"
+  },
+  "author": "Giovanni Bruno <giovanni.bruno@soluzionifutura.it>",
+  "contributors": [
+    {
+      "name": "Giovanni Bruno",
+      "email": "giovanni.bruno@soluzionifutura.it"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:giowe/metrics2cloudwatch.git"
+  },
+  "license": "MIT",
+  "main": "main.js",
+  "dependencies": {
+    "aws-cwlogs": "^2.3.0",
+    "aws-sdk": "^2.81.0",
+    "cli-color": "^1.2.0",
+    "eslint": "^4.1.1",
+    "gulp": "^3.9.1",
+    "gulp-help-doc": "^1.1.0",
+    "gulp-install": "^1.1.0",
+    "inquirer": "^3.1.1",
+    "moment": "^2.18.1",
+    "zip-dir": "^1.0.2"
+  }
+}
