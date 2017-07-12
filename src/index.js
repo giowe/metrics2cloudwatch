@@ -27,7 +27,6 @@ exports.handler = (event, context, callback) => {
     .then(s3objects => {
       const formatted = formatter(...s3objects.map(s3object => JSON.parse(zlib.unzipSync(s3object.Body).toString())));
       const lastMetric = formatted[formatted.length - 1];
-      console.log(lastMetric);
 
       const cloudwatch = new AWS.CloudWatch();
 
@@ -40,9 +39,9 @@ exports.handler = (event, context, callback) => {
         ]
       }, (err, data) => {
         if (err) return callback(err);
+        console.log(data);
         callback(data);
       });
-      callback(null, lastMetric);
     })
     .catch(err => callback(err));
 };
@@ -69,7 +68,7 @@ function getDiskUtilization(lastMetric) {
         SampleCount: 0.0,
         Sum: 0.0
       },*/
-      Timestamp: time,
+      Timestamp: new Date(time),
       Unit: 'Percent',
       Value: 100*(available / (available + used))
     };
@@ -99,7 +98,7 @@ function getDiskSpaceUsed(lastMetric) {
         SampleCount: 0.0,
         Sum: 0.0
       },*/
-      Timestamp: time,
+      Timestamp: new Date(time),
       Unit: 'Kilobytes',
       Value: used
     };
@@ -128,7 +127,7 @@ function getDiskSpaceAvailble(lastMetric) {
         SampleCount: 0.0,
         Sum: 0.0
       },*/
-      Timestamp: time,
+      Timestamp: new Date(time),
       Unit: 'Kilobytes',
       Value: available
     };
