@@ -201,7 +201,7 @@ gulp.task('logs', () => {
 });
 
 /**
- * Invokes the Lambda function passing test-payload.json as
+ * Invokes the Lambda function passing test-payload.js as
  * payload and printing the response to the console;
  * @task {invoke}
  * @order {9}
@@ -211,7 +211,7 @@ gulp.task('invoke', next => {
 
   let payload;
   try {
-    payload = JSON.stringify(require('./test-payload.json'));
+    payload = JSON.stringify(require('./test-payload'));
   } catch(err) {
     payload = null;
   }
@@ -238,7 +238,7 @@ gulp.task('invoke', next => {
 });
 
 /**
- * Invokes the Lambda function LOCALLY passing test-payload.json
+ * Invokes the Lambda function LOCALLY passing test-payload.js
  * as payload and printing the response to the console;
  * @task {invoke-local}
  * @order {10}

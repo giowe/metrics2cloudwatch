@@ -12,9 +12,9 @@ module.exports = function(next){
 
   let payload;
   try {
-    payload = require('./test-payload.json');
+    payload = require('./test-payload');
   } catch (err) {
-    return console.log('WARNING! "test-payload.json" not found!');
+    return console.log('WARNING! "test-payload.js" not found!');
   }
 
   const _fail = function(err) {
