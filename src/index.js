@@ -48,12 +48,15 @@ exports.handler = (event, context, callback) => {
 };
 
 function getDiskUtilization(lastMetric) {
-  const { time, diskData } = lastMetric;
+  const { time, id, customerId, diskData } = lastMetric;
   return Object.keys(diskData).map((filesystem) => {
     const { available, used, mountPath } = diskData[filesystem];
     return {
       MetricName: 'DiskSpaceUtilization',
       Dimensions: [{
+        Name: 'InstanceId',
+        Value: `${customerId}-${id}`
+      }, {
         Name: 'MountPath',
         Value: mountPath
       }, {
@@ -75,12 +78,15 @@ function getDiskUtilization(lastMetric) {
 }
 
 function getDiskSpaceUsed(lastMetric) {
-  const { time, diskData } = lastMetric;
+  const { time, id, customerId, diskData } = lastMetric;
   return Object.keys(diskData).map((filesystem) => {
     const { used, mountPath } = diskData[filesystem];
     return {
       MetricName: 'DiskSpaceUsed',
       Dimensions: [{
+        Name: 'InstanceId',
+        Value: `${customerId}-${id}`
+      }, {
         Name: 'MountPath',
         Value: mountPath
       }, {
@@ -101,12 +107,15 @@ function getDiskSpaceUsed(lastMetric) {
 }
 
 function getDiskSpaceAvailble(lastMetric) {
-  const { time, diskData } = lastMetric;
+  const { time, id, customerId, diskData } = lastMetric;
   return Object.keys(diskData).map((filesystem) => {
     const { available, mountPath } = diskData[filesystem];
     return {
       MetricName: 'DiskSpaceAvailable',
       Dimensions: [{
+        Name: 'InstanceId',
+        Value: `${customerId}-${id}`
+      }, {
         Name: 'MountPath',
         Value: mountPath
       }, {
