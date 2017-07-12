@@ -18,7 +18,7 @@ exports.handler = (event, context, callback) => {
       const { previouskey } = data.Metadata;
       const promises = [s3Client.getObject(params).promise()];
       if(previouskey) {
-        promises.push(s3Client.getObject({
+        promises.unshift(s3Client.getObject({
           Key: previouskey,
           Bucket: bucket.name
         }).promise());
