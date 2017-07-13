@@ -53,8 +53,7 @@ exports.handler = (event, context, callback) => {
         MetricData
       }, (err, data) => {
         if (err) return callback(err);
-        console.log(data);
-        callback(data);
+        callback(null, data);
       });
     })
     .catch(err => callback(err));
@@ -153,9 +152,9 @@ function getNetworkByteIn(lastMetric) {
   return Object.keys(networkData).reduce((acc, networkName) => {
     const { bytesIn } = networkData[networkName];
     if(isNaN(bytesIn)) {
-      return;
+      return acc;
     }
-    return acc.push({
+    acc.push({
       MetricName: 'NetworkBytesIn',
       Dimensions: [{
         Name: 'InstanceId',
@@ -168,6 +167,7 @@ function getNetworkByteIn(lastMetric) {
       Unit: 'Bytes',
       Value: bytesIn
     });
+    return acc;
   }, []);
 }
 
@@ -176,9 +176,9 @@ function getNetworkByteOut(lastMetric) {
   return Object.keys(networkData).reduce((acc, networkName) => {
     const { bytesOut } = networkData[networkName];
     if(isNaN(bytesOut)) {
-      return;
+      return acc;
     }
-    return acc.push({
+    acc.push({
       MetricName: 'NetworkBytesOut',
       Dimensions: [{
         Name: 'InstanceId',
@@ -191,6 +191,7 @@ function getNetworkByteOut(lastMetric) {
       Unit: 'Bytes',
       Value: bytesOut
     });
+    return acc;
   }, []);
 }
 
