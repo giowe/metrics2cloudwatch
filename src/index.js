@@ -144,12 +144,12 @@ function getDiskSpaceAvailble(lastMetric) {
 
 function getNetworkByteIn(lastMetric) {
   const { time, id, customerId, networkData } = lastMetric;
-  return Object.keys(networkData).reduce((networkName) => {
+  return Object.keys(networkData).reduce((acc, networkName) => {
     const { bytesIn } = networkData[networkName];
     if(isNaN(bytesIn)) {
       return;
     }
-    return {
+    return acc.push({
       MetricName: 'NetworkBytesIn',
       Dimensions: [{
         Name: 'InstanceId',
@@ -161,18 +161,18 @@ function getNetworkByteIn(lastMetric) {
       Timestamp: new Date(time),
       Unit: 'Bytes',
       Value: bytesIn
-    };
+    });
   }, []);
 }
 
 function getNetworkByteOut(lastMetric) {
   const { time, id, customerId, networkData } = lastMetric;
-  return Object.keys(networkData).reduce((networkName) => {
+  return Object.keys(networkData).reduce((acc, networkName) => {
     const { bytesOut } = networkData[networkName];
     if(isNaN(bytesOut)) {
       return;
     }
-    return {
+    return acc.push({
       MetricName: 'NetworkBytesOut',
       Dimensions: [{
         Name: 'InstanceId',
@@ -184,7 +184,7 @@ function getNetworkByteOut(lastMetric) {
       Timestamp: new Date(time),
       Unit: 'Bytes',
       Value: bytesOut
-    };
+    });
   }, []);
 }
 
