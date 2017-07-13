@@ -150,9 +150,12 @@ function getDiskSpaceAvailble(lastMetric) {
 
 function getNetworkByteIn(lastMetric) {
   const { time, id, customerId, networkData } = lastMetric;
-  return Object.keys(networkData).map((networkName) => {
+  return Object.keys(networkData).reduce((acc, networkName) => {
     const { bytesIn } = networkData[networkName];
-    return {
+    if(isNaN(bytesIn)) {
+      return;
+    }
+    return acc.push({
       MetricName: 'NetworkBytesIn',
       Dimensions: [{
         Name: 'InstanceId',
@@ -164,15 +167,18 @@ function getNetworkByteIn(lastMetric) {
       Timestamp: new Date(time),
       Unit: 'Bytes',
       Value: bytesIn
-    };
-  });
+    });
+  }, []);
 }
 
 function getNetworkByteOut(lastMetric) {
   const { time, id, customerId, networkData } = lastMetric;
-  return Object.keys(networkData).map((networkName) => {
+  return Object.keys(networkData).reduce((acc, networkName) => {
     const { bytesOut } = networkData[networkName];
-    return {
+    if(isNaN(bytesOut)) {
+      return;
+    }
+    return acc.push({
       MetricName: 'NetworkBytesOut',
       Dimensions: [{
         Name: 'InstanceId',
@@ -184,8 +190,8 @@ function getNetworkByteOut(lastMetric) {
       Timestamp: new Date(time),
       Unit: 'Bytes',
       Value: bytesOut
-    };
-  });
+    });
+  }, []);
 }
 
 function getMemoryUtilization(lastMetric) {
@@ -265,7 +271,7 @@ function getSwapUsed(lastMetric) {
 
 function getCpuUtilization(lastMetric) {
   const { time, id, customerId, cpuData } = lastMetric;
-  return {
+  return isNaN(cpuData) ? null : {
     MetricName: 'CpuUtilization',
     Dimensions: [{
       Name: 'InstanceId',
