@@ -36,11 +36,14 @@ exports.handler = (event, context, callback) => {
           ...getDiskUtilization(lastMetric),
           ...getDiskSpaceUsed(lastMetric),
           ...getDiskSpaceAvailble(lastMetric),
+          ...getNetworkByteIn(lastMetric),
+          ...getNetworkByteOut(lastMetric),
           getMemoryUtilization(lastMetric),
           getMemoryAvailable(lastMetric),
           getMemoryUsed(lastMetric),
           getSwapUsed(lastMetric),
-          getSwapUtilization(lastMetric)
+          getSwapUtilization(lastMetric),
+          getCpuUtilization(lastMetric)
         ]
       }, (err, data) => {
         if (err) return callback(err);
@@ -139,6 +142,46 @@ function getDiskSpaceAvailble(lastMetric) {
   });
 }
 
+function getNetworkByteIn(lastMetric) {
+  const { time, id, customerId, networkData } = lastMetric;
+  return Object.keys(networkData).map((networkName) => {
+    const { bytesIn } = networkData[networkName];
+    return {
+      MetricName: 'NetworkBytesIn',
+      Dimensions: [{
+        Name: 'InstanceId',
+        Value: `${customerId}-${id}`
+      }, {
+        Name: 'NetworkName',
+        Value: networkName
+      }],
+      Timestamp: new Date(time),
+      Unit: 'Bytes',
+      Value: bytesIn
+    };
+  });
+}
+
+function getNetworkByteOut(lastMetric) {
+  const { time, id, customerId, networkData } = lastMetric;
+  return Object.keys(networkData).map((networkName) => {
+    const { bytesOut } = networkData[networkName];
+    return {
+      MetricName: 'NetworkBytesOut',
+      Dimensions: [{
+        Name: 'InstanceId',
+        Value: `${customerId}-${id}`
+      }, {
+        Name: 'NetworkName',
+        Value: networkName
+      }],
+      Timestamp: new Date(time),
+      Unit: 'Bytes',
+      Value: bytesOut
+    };
+  });
+}
+
 function getMemoryUtilization(lastMetric) {
   const { time, id, customerId, memoryData } = lastMetric;
   const { percentage } = memoryData;
@@ -211,5 +254,19 @@ function getSwapUsed(lastMetric) {
     Timestamp: new Date(time),
     Unit: 'Kilobytes',
     Value: swapUsed
+  };
+}
+
+function getCpuUtilization(lastMetric) {
+  const { time, id, customerId, cpuData } = lastMetric;
+  return {
+    MetricName: 'CpuUtilization',
+    Dimensions: [{
+      Name: 'InstanceId',
+      Value: `${customerId}-${id}`
+    }],
+    Timestamp: new Date(time),
+    Unit: 'Percent',
+    Value: cpuData === 'NA' ? NaN : cpuData
   };
 }
