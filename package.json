@@ -1,8 +1,8 @@
 {
   "private": true,
   "name": "metrics2cloudwatch",
-  "version": "0.0.0",
-  "description": "",
+  "version": "1.0.0",
+  "description": "metrics2cloudwatch is a dev-Solution that can be used to deploy an AWS Lamba function that will take metrics file from an S3 Bucket, format them trough [system-metrics-formatter](https://www.npmjs.com/package/system-metrics-formatter) and then upload them on AWS CloudWatch.",
   "scripts": {
     "postinstall": "gulp install",
     "test": "gulp invoke-local"
