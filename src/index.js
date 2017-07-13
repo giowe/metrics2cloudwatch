@@ -187,7 +187,7 @@ function getMemoryUtilization(lastMetric) {
     }],
     Timestamp: new Date(time),
     Unit: 'Percent',
-    Value: percentage
+    Value: percentage*100
   };
 }
 
@@ -232,7 +232,7 @@ function getSwapUtilization(lastMetric) {
     }],
     Timestamp: new Date(time),
     Unit: 'Percent',
-    Value: swapUtilization
+    Value: swapUtilization*100
   };
 }
 
@@ -261,6 +261,6 @@ function getCpuUtilization(lastMetric) {
     }],
     Timestamp: new Date(time),
     Unit: 'Percent',
-    Value: cpuData
+    Value: cpuData*100
   };
 }
