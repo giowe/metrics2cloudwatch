@@ -18,7 +18,7 @@ exports.handler = (event, context, callback) => {
     .then(data => {
       const { previouskey, cloudwatchenabledmetrics } = data.Metadata;
 
-      enabledStats.push(cloudwatchenabledmetrics || ['CpuUtilization', 'MemoryUtilization', 'NetworkUtilization']);
+      enabledStats.push(...(cloudwatchenabledmetrics || ['CpuUtilization', 'MemoryUtilization']));
 
       const promises = [s3Client.getObject(params).promise()];
 
@@ -45,7 +45,7 @@ exports.handler = (event, context, callback) => {
       if(enabledStats.includes('SwapUsed')) metricData.push(getSwapUsed(lastMetric));
       if(enabledStats.includes('SwapUtilization')) metricData.push(getSwapUtilization(lastMetric));
 
-      if(enabledStats.includes('NetworUtilization')) {
+      if(enabledStats.includes('NetworkUtilization')) {
         const networkByteIn = getNetworkByteIn(lastMetric);
         if (networkByteIn.length) metricData.push(...networkByteIn);
 
