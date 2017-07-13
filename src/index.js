@@ -35,7 +35,12 @@ exports.handler = (event, context, callback) => {
         MetricData: [
           ...getDiskUtilization(lastMetric),
           ...getDiskSpaceUsed(lastMetric),
-          ...getDiskSpaceAvailble(lastMetric)
+          ...getDiskSpaceAvailble(lastMetric),
+          getMemoryUtilization(lastMetric),
+          getMemoryAvailable(lastMetric),
+          getMemoryUsed(lastMetric),
+          getSwapUsed(lastMetric),
+          getSwapUtilization(lastMetric)
         ]
       }, (err, data) => {
         if (err) return callback(err);
@@ -63,11 +68,11 @@ function getDiskUtilization(lastMetric) {
         Value: filesystem
       }],
       /*StatisticValues: {
-        Maximum: 0.0,
-        Minimum: 0.0,
-        SampleCount: 0.0,
-        Sum: 0.0
-      },*/
+       Maximum: 0.0,
+       Minimum: 0.0,
+       SampleCount: 0.0,
+       Sum: 0.0
+       },*/
       Timestamp: new Date(time),
       Unit: 'Percent',
       Value: 100*(available / (available + used))
@@ -93,11 +98,11 @@ function getDiskSpaceUsed(lastMetric) {
         Value: filesystem
       }],
       /*StatisticValues: {
-        Maximum: 0.0,
-        Minimum: 0.0,
-        SampleCount: 0.0,
-        Sum: 0.0
-      },*/
+       Maximum: 0.0,
+       Minimum: 0.0,
+       SampleCount: 0.0,
+       Sum: 0.0
+       },*/
       Timestamp: new Date(time),
       Unit: 'Kilobytes',
       Value: used
@@ -122,14 +127,89 @@ function getDiskSpaceAvailble(lastMetric) {
         Value: filesystem
       }],
       /*StatisticValues: {
-        Maximum: 0.0,
-        Minimum: 0.0,
-        SampleCount: 0.0,
-        Sum: 0.0
-      },*/
+       Maximum: 0.0,
+       Minimum: 0.0,
+       SampleCount: 0.0,
+       Sum: 0.0
+       },*/
       Timestamp: new Date(time),
       Unit: 'Kilobytes',
       Value: available
     };
   });
+}
+
+function getMemoryUtilization(lastMetric) {
+  const { time, id, customerId, memoryData } = lastMetric;
+  const { percentage } = memoryData;
+  return {
+    MetricName: 'DiskSpaceAvailable',
+    Dimensions: [{
+      Name: 'InstanceId',
+      Value: `${customerId}-${id}`
+    }],
+    Timestamp: new Date(time),
+    Unit: 'Percent',
+    Value: percentage
+  };
+}
+
+function getMemoryAvailable(lastMetric) {
+  const { time, id, customerId, memoryData } = lastMetric;
+  const { memoryAvailable } = memoryData;
+  return {
+    MetricName: 'MemoryAvailable',
+    Dimensions: [{
+      Name: 'InstanceId',
+      Value: `${customerId}-${id}`
+    }],
+    Timestamp: new Date(time),
+    Unit: 'Kilobytes',
+    Value: memoryAvailable
+  };
+}
+
+function getMemoryUsed(lastMetric) {
+  const { time, id, customerId, memoryData } = lastMetric;
+  const { memoryUsed } = memoryData;
+  return {
+    MetricName: 'MemoryUsed',
+    Dimensions: [{
+      Name: 'InstanceId',
+      Value: `${customerId}-${id}`
+    }],
+    Timestamp: new Date(time),
+    Unit: 'Kilobytes',
+    Value: memoryUsed
+  };
+}
+
+function getSwapUtilization(lastMetric) {
+  const { time, id, customerId, memoryData } = lastMetric;
+  const { swapUtilization } = memoryData;
+  return {
+    MetricName: 'SwapUtilization',
+    Dimensions: [{
+      Name: 'InstanceId',
+      Value: `${customerId}-${id}`
+    }],
+    Timestamp: new Date(time),
+    Unit: 'Percent',
+    Value: swapUtilization
+  };
+}
+
+function getSwapUsed(lastMetric) {
+  const { time, id, customerId, memoryData } = lastMetric;
+  const { swapUsed } = memoryData;
+  return {
+    MetricName: 'SwapUsed',
+    Dimensions: [{
+      Name: 'InstanceId',
+      Value: `${customerId}-${id}`
+    }],
+    Timestamp: new Date(time),
+    Unit: 'Kilobytes',
+    Value: swapUsed
+  };
 }
