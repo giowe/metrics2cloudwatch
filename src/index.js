@@ -38,7 +38,7 @@ exports.handler = (event, context, callback) => {
         getMemoryAvailable(lastMetric),
         getMemoryUsed(lastMetric),
         getSwapUsed(lastMetric),
-        getSwapUtilization(lastMetric),
+        getSwapUtilization(lastMetric)
       ];
 
       const networkByteIn = getNetworkByteIn(lastMetric);
@@ -279,6 +279,6 @@ function getCpuUtilization(lastMetric) {
     }],
     Timestamp: new Date(time),
     Unit: 'Percent',
-    Value: cpuData === 'NA' ? NaN : cpuData
+    Value: cpuData
   };
 }
