@@ -95,8 +95,14 @@ To modify the config, simply modify the config file previously created and then 
 #### Data
   I recommend the npm module [system-metrics-collector](https://www.npmjs.com/package/system-metrics-collector) available even in GO language at this [link](https://github.com/giowe/system-metrics-collector/tree/go) (if you want a compiled version) to collect such metrics and put them on an S3 bucket;
   On the S3 bucket you have to put a Gzipped file named: ``<CustomerId>/<Id>/<CustomerId>_<Id>_<UnixTime>``
-  
-  Structured like this:
+  S3 objects should have a metadata structured like this:
+  ```
+  {
+    "previousKey": "previous s3 object",
+    "cloudWatchEnabledMetrics": ['DiskUtilization', 'DiskSpaceUsed', 'DiskSpaceAvailable', 'MemoryUtilization', 'MemoryAvailable', 'MemoryUsed', 'SwapUsed', 'SwapUtilization', 'NetworkUtilization', 'CpuUtilization']
+  }
+  ```
+  S3 objects should be structured like this:
   ```
   {
     "Time": 1499680866,
