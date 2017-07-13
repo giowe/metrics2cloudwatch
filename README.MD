@@ -99,7 +99,7 @@ To modify the config, simply modify the config file previously created and then 
   ```
   {
     "previousKey": "previous s3 object",
-    "cloudWatchEnabledMetrics": ['DiskUtilization', 'DiskSpaceUsed', 'DiskSpaceAvailable', 'MemoryUtilization', 'MemoryAvailable', 'MemoryUsed', 'SwapUsed', 'SwapUtilization', 'NetworkUtilization', 'CPUUtilization']
+    "cloudWatchEnabledMetrics": ["DiskUtilization", "DiskSpaceUsed", "DiskSpaceAvailable", "MemoryUtilization", "MemoryAvailable", "MemoryUsed", "SwapUsed", "SwapUtilization", "NetworkUtilization", "CPUUtilization"]
   }
   ```
   S3 objects should be structured like this:
