@@ -58,8 +58,6 @@ exports.handler = (event, context, callback) => {
         if (cpuUtilization) metricData.push(cpuUtilization);
       }
 
-      console.log('Metrics:' + metricData.length);
-      console.log(metricData);
       const metricDataChunks = new Array(Math.ceil(metricData.length / 20)).fill().map(() => metricData.splice(0, 20));
       return Promise.all(metricDataChunks.map(MetricData => cloudwatch.putMetricData({
         Namespace: 'System/Linux',
