@@ -18,7 +18,7 @@ exports.handler = (event, context, callback) => {
       const { previouskey, cloudwatchenabledmetrics } = data.Metadata;
 
       const promises = [
-        cloudwatchenabledmetrics ? cloudwatchenabledmetrics : ['DiskUtilization', 'DiskSpaceUsed', 'DiskSpaceAvailble', 'MemoryUtilization', 'MemoryAvailable', 'MemoryUsed', 'SwapUsed', 'SwapUtilization', 'NetworUtilization', 'CpuUtilization'],
+        cloudwatchenabledmetrics || ['CpuUtilization', 'MemoryUtilization', 'NetworkUtilization'],
         s3Client.getObject(params).promise()
       ];
 
