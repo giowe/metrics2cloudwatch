@@ -199,7 +199,7 @@ function getMemoryUtilization(lastMetric) {
   const { time, id, customerId, memoryData } = lastMetric;
   const { percentage } = memoryData;
   return {
-    MetricName: 'DiskSpaceAvailable',
+    MetricName: 'MemoryUtilization',
     Dimensions: [{
       Name: 'InstanceId',
       Value: `${customerId}-${id}`
