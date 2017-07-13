@@ -11,6 +11,6 @@
     }
   ],
   "dependencies": {
-    "system-metrics-formatter": "^1.0.9"
+    "system-metrics-formatter": "^1.0.10"
   }
 }
