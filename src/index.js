@@ -12,10 +12,16 @@ exports.handler = (event, context, callback) => {
     Key: object.key,
     Bucket: bucket.name
   };
+
+  const enabledStats = [];
   s3Client.headObject(params).promise()
     .then(data => {
-      const { previouskey } = data.Metadata;
+      const { previouskey, cloudwatchenabledmetrics } = data.Metadata;
+
+      enabledStats.push(...(cloudwatchenabledmetrics || ['CpuUtilization', 'MemoryUtilization']));
+
       const promises = [s3Client.getObject(params).promise()];
+
       if(previouskey) {
         promises.unshift(s3Client.getObject({
           Key: previouskey,
@@ -27,26 +33,30 @@ exports.handler = (event, context, callback) => {
     .then(s3objects => {
       const formatted = formatter(...s3objects.map(s3object => JSON.parse(zlib.unzipSync(s3object.Body).toString())));
       const lastMetric = formatted[formatted.length - 1];
-
       const cloudwatch = new AWS.CloudWatch();
+      const metricData = [];
 
-      const metricData = [
-        ...getDiskUtilization(lastMetric),
-        ...getDiskSpaceUsed(lastMetric),
-        ...getDiskSpaceAvailble(lastMetric),
-        getMemoryUtilization(lastMetric),
-        getMemoryAvailable(lastMetric),
-        getMemoryUsed(lastMetric),
-        getSwapUsed(lastMetric),
-        getSwapUtilization(lastMetric)
-      ];
+      if(enabledStats.includes('DiskUtilization')) metricData.push(...getDiskUtilization(lastMetric));
+      if(enabledStats.includes('DiskSpaceUsed')) metricData.push(...getDiskSpaceUsed(lastMetric));
+      if(enabledStats.includes('DiskSpaceAvailable')) metricData.push(...getDiskSpaceAvailable(lastMetric));
+      if(enabledStats.includes('MemoryUtilization')) metricData.push(getMemoryUtilization(lastMetric));
+      if(enabledStats.includes('MemoryAvailable')) metricData.push(getMemoryAvailable(lastMetric));
+      if(enabledStats.includes('MemoryUsed')) metricData.push(getMemoryUsed(lastMetric));
+      if(enabledStats.includes('SwapUsed')) metricData.push(getSwapUsed(lastMetric));
+      if(enabledStats.includes('SwapUtilization')) metricData.push(getSwapUtilization(lastMetric));
 
-      const networkByteIn = getNetworkByteIn(lastMetric);
-      if (networkByteIn.length) metricData.push(...networkByteIn);
-      const networkByteOut = getNetworkByteOut(lastMetric);
-      if (networkByteIn.length) metricData.push(...networkByteOut);
-      const cpuUtilization = getCpuUtilization(lastMetric);
-      if (cpuUtilization) metricData.push(cpuUtilization);
+      if(enabledStats.includes('NetworkUtilization')) {
+        const networkByteIn = getNetworkByteIn(lastMetric);
+        if (networkByteIn.length) metricData.push(...networkByteIn);
+
+        const networkByteOut = getNetworkByteOut(lastMetric);
+        if (networkByteIn.length) metricData.push(...networkByteOut);
+      }
+
+      if(enabledStats.includes('CpuUtilization')) {
+        const cpuUtilization = getCpuUtilization(lastMetric);
+        if (cpuUtilization) metricData.push(cpuUtilization);
+      }
 
       const metricDataChunks = new Array(Math.ceil(metricData.length / 20)).fill().map(() => metricData.splice(0, 20));
       return Promise.all(metricDataChunks.map(MetricData => cloudwatch.putMetricData({
@@ -105,7 +115,7 @@ function getDiskSpaceUsed(lastMetric) {
   });
 }
 
-function getDiskSpaceAvailble(lastMetric) {
+function getDiskSpaceAvailable(lastMetric) {
   const { time, id, customerId, diskData } = lastMetric;
   return Object.keys(diskData).map((filesystem) => {
     const { available, mountPath } = diskData[filesystem];
