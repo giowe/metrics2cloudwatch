@@ -1,6 +1,7 @@
 {
   "private": true,
   "name": "metrics2cloudwatch",
+  "version": "1.0.0",
   "description": "get metrics from s3 bucket, parses and uploades them to cloud watch",
   "author": "Giovanni Bruno <giovanni.bruno@soluzionifutura.it>",
   "contributors": [
@@ -10,6 +11,6 @@
     }
   ],
   "dependencies": {
-    "system-metrics-formatter": "^1.0.8"
+    "system-metrics-formatter": "^1.0.9"
   }
 }
