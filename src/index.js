@@ -30,7 +30,7 @@ exports.handler = (event, context, callback) => {
 
       const cloudwatch = new AWS.CloudWatch();
 
-      const MetricData = [
+      const metricData = [
         ...getDiskUtilization(lastMetric),
         ...getDiskSpaceUsed(lastMetric),
         ...getDiskSpaceAvailble(lastMetric),
@@ -42,20 +42,19 @@ exports.handler = (event, context, callback) => {
       ];
 
       const networkByteIn = getNetworkByteIn(lastMetric);
-      if (networkByteIn.length) MetricData.push(...networkByteIn);
+      if (networkByteIn.length) metricData.push(...networkByteIn);
       const networkByteOut = getNetworkByteOut(lastMetric);
-      if (networkByteIn.length) MetricData.push(...networkByteOut);
+      if (networkByteIn.length) metricData.push(...networkByteOut);
       const cpuUtilization = getCpuUtilization(lastMetric);
-      if (cpuUtilization) MetricData.push(cpuUtilization);
+      if (cpuUtilization) metricData.push(cpuUtilization);
 
-      cloudwatch.putMetricData({
+      const metricDataChunks = new Array(Math.ceil(metricData.length / 20)).fill().map(() => metricData.splice(0, 20));
+      return Promise.all(metricDataChunks.map(MetricData => cloudwatch.putMetricData({
         Namespace: 'System/Linux',
         MetricData
-      }, (err, data) => {
-        if (err) return callback(err);
-        callback(null, data);
-      });
+      }).promise()));
     })
+    .then(() => callback())
     .catch(err => callback(err));
 };
 
