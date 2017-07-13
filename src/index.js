@@ -53,8 +53,8 @@ exports.handler = (event, context, callback) => {
         if (networkByteIn.length) metricData.push(...networkByteOut);
       }
 
-      if(enabledStats.includes('CpuUtilization')) {
-        const cpuUtilization = getCpuUtilization(lastMetric);
+      if(enabledStats.includes('CPUUtilization')) {
+        const cpuUtilization = getCPUUtilization(lastMetric);
         if (cpuUtilization) metricData.push(cpuUtilization);
       }
 
@@ -261,10 +261,10 @@ function getSwapUsed(lastMetric) {
   };
 }
 
-function getCpuUtilization(lastMetric) {
+function getCPUUtilization(lastMetric) {
   const { time, id, customerId, cpuData } = lastMetric;
   return isNaN(cpuData) ? null : {
-    MetricName: 'CpuUtilization',
+    MetricName: 'CPUUtilization',
     Dimensions: [{
       Name: 'InstanceId',
       Value: `${customerId}-${id}`
