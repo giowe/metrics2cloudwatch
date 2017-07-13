@@ -38,7 +38,7 @@ exports.handler = (event, context, callback) => {
 
       if(enabledStats.includes('DiskUtilization')) metricData.push(...getDiskUtilization(lastMetric));
       if(enabledStats.includes('DiskSpaceUsed')) metricData.push(...getDiskSpaceUsed(lastMetric));
-      if(enabledStats.includes('DiskSpaceAvailble')) metricData.push(...getDiskSpaceAvailble(lastMetric));
+      if(enabledStats.includes('DiskSpaceAvailable')) metricData.push(...getDiskSpaceAvailable(lastMetric));
       if(enabledStats.includes('MemoryUtilization')) metricData.push(getMemoryUtilization(lastMetric));
       if(enabledStats.includes('MemoryAvailable')) metricData.push(getMemoryAvailable(lastMetric));
       if(enabledStats.includes('MemoryUsed')) metricData.push(getMemoryUsed(lastMetric));
@@ -117,7 +117,7 @@ function getDiskSpaceUsed(lastMetric) {
   });
 }
 
-function getDiskSpaceAvailble(lastMetric) {
+function getDiskSpaceAvailable(lastMetric) {
   const { time, id, customerId, diskData } = lastMetric;
   return Object.keys(diskData).map((filesystem) => {
     const { available, mountPath } = diskData[filesystem];
