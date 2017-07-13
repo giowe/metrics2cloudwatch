@@ -74,12 +74,6 @@ function getDiskUtilization(lastMetric) {
         Name: 'Filesystem',
         Value: filesystem
       }],
-      /*StatisticValues: {
-       Maximum: 0.0,
-       Minimum: 0.0,
-       SampleCount: 0.0,
-       Sum: 0.0
-       },*/
       Timestamp: new Date(time),
       Unit: 'Percent',
       Value: 100*(available / (available + used))
@@ -104,12 +98,6 @@ function getDiskSpaceUsed(lastMetric) {
         Name: 'Filesystem',
         Value: filesystem
       }],
-      /*StatisticValues: {
-       Maximum: 0.0,
-       Minimum: 0.0,
-       SampleCount: 0.0,
-       Sum: 0.0
-       },*/
       Timestamp: new Date(time),
       Unit: 'Kilobytes',
       Value: used
@@ -133,12 +121,6 @@ function getDiskSpaceAvailble(lastMetric) {
         Name: 'Filesystem',
         Value: filesystem
       }],
-      /*StatisticValues: {
-       Maximum: 0.0,
-       Minimum: 0.0,
-       SampleCount: 0.0,
-       Sum: 0.0
-       },*/
       Timestamp: new Date(time),
       Unit: 'Kilobytes',
       Value: available
