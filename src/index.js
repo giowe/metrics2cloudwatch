@@ -16,7 +16,12 @@ exports.handler = (event, context, callback) => {
   s3Client.headObject(params).promise()
     .then(data => {
       const { previouskey, cloudwatchenabledmetrics } = data.Metadata;
-      const promises = [cloudwatchenabledmetrics, s3Client.getObject(params).promise()];
+
+      const promises = [
+        cloudwatchenabledmetrics ? cloudwatchenabledmetrics : ['DiskUtilization', 'DiskSpaceUsed', 'DiskSpaceAvailble', 'MemoryUtilization', 'MemoryAvailable', 'MemoryUsed', 'SwapUsed', 'SwapUtilization', 'NetworUtilization', 'CpuUtilization'],
+        s3Client.getObject(params).promise()
+      ];
+
       if(previouskey) {
         promises.unshift(s3Client.getObject({
           Key: previouskey,
