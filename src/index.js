@@ -13,14 +13,14 @@ exports.handler = (event, context, callback) => {
     Bucket: bucket.name
   };
 
+  const enabledStats = [];
   s3Client.headObject(params).promise()
     .then(data => {
       const { previouskey, cloudwatchenabledmetrics } = data.Metadata;
 
-      const promises = [
-        cloudwatchenabledmetrics || ['CpuUtilization', 'MemoryUtilization', 'NetworkUtilization'],
-        s3Client.getObject(params).promise()
-      ];
+      enabledStats.push(cloudwatchenabledmetrics || ['CpuUtilization', 'MemoryUtilization', 'NetworkUtilization']);
+
+      const promises = [s3Client.getObject(params).promise()];
 
       if(previouskey) {
         promises.unshift(s3Client.getObject({
@@ -31,11 +31,7 @@ exports.handler = (event, context, callback) => {
       return Promise.all(promises);
     })
     .then(s3objects => {
-      console.log(s3objects);
-      const enabledStats = s3objects[0];
-      console.log(enabledStats);
-
-      const formatted = formatter(...s3objects.slice(1).map(s3object => JSON.parse(zlib.unzipSync(s3object.Body).toString())));
+      const formatted = formatter(...s3objects.map(s3object => JSON.parse(zlib.unzipSync(s3object.Body).toString())));
       const lastMetric = formatted[formatted.length - 1];
       const cloudwatch = new AWS.CloudWatch();
       const metricData = [];
@@ -62,11 +58,13 @@ exports.handler = (event, context, callback) => {
         if (cpuUtilization) metricData.push(cpuUtilization);
       }
 
+      console.log('Metrics:' + metricData.length);
+      console.log(metricData);
       const metricDataChunks = new Array(Math.ceil(metricData.length / 20)).fill().map(() => metricData.splice(0, 20));
-      return Promise.all(/*metricDataChunks.map(MetricData => cloudwatch.putMetricData({
-       Namespace: 'System/Linux',
-       MetricData
-       }).promise())*/);
+      return Promise.all(metricDataChunks.map(MetricData => cloudwatch.putMetricData({
+        Namespace: 'System/Linux',
+        MetricData
+      }).promise()));
     })
     .then(() => callback())
     .catch(err => callback(err));
